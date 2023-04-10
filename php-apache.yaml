@@ -21,6 +21,18 @@ spec:
         image: registry.k8s.io/hpa-example
         ports:
         - containerPort: 80
+        livenessProbe: #При фейле перезагружает под
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 11
+          periodSeconds: 30
+        readinessProbe: #При фейле убирает под из балансировки 
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 11
+          periodSeconds: 30
         resources:
           limits:
             cpu: 200m #Лимит потребления ЦПУ подом
