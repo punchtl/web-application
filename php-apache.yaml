@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-apache
+spec:
+  selector:
+    matchLabels:
+      run: php-apache
+  strategy:
+    rollingUpdate: #Kubernetes запускает новые поды параллельно с запущенными старыми, а затем убивает старые, и оставляет только новые.
+      maxSurge: 1 
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: php-apache
+    spec:
+      containers:
+      - name: php-apache
+        image: registry.k8s.io/hpa-example
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 200m #Лимит потребления ЦПУ подом
+            memory: 128Mi #Лимит потребления ОЗУ подом
+          requests:
+            cpu: 100m
+            memory: 128Mi
+---
+#service для приём трафика
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-apache
+  labels:
+    run: php-apache
+spec:
+  ports:
+  - port: 80
+  selector:
+    run: php-apache
