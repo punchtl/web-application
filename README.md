@@ -5,7 +5,7 @@
 kubectl apply -f php-apache.yaml
 ```
 
-Добавить автомаштабирование
+Автомасштабирование
 ```
 kubectl autoscale deployment php-apache --cpu-percent=60 --min=1 --max=4
 ```
